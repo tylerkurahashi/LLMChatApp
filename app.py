@@ -1,4 +1,13 @@
+import os
+
 import streamlit as st
+from dotenv import load_dotenv
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import HumanMessage
+
+from const import OPENAI_API_MODEL, OPENAI_API_TEMPERATURE
+
+load_dotenv()
 
 st.title("llm-chat-app")
 
@@ -18,7 +27,12 @@ if prompt:
     st.markdown(prompt)
     
   with st.chat_message("assistant"):
-    response = "こんにちは"
-    st.markdown(response)
+    chat = ChatOpenAI(
+      model=OPENAI_API_MODEL,
+      temperature=OPENAI_API_TEMPERATURE
+    )
+    messages = [HumanMessage(content=prompt)]
+    response = chat(messages)
+    st.markdown(response.content)
     
   st.session_state.messages.append({"role": "assistant", "content": response})
